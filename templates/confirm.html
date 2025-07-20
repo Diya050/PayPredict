@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Confirm & Add Employee</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container mt-5">
+    <h1 class="mb-4">Confirm Salary for {{ name }}</h1>
+
+    <div class="alert alert-info">
+      <strong>Predicted Salary:</strong> ₹ {{ predicted }}
+    </div>
+
+    <form method="POST" action="/add">
+      <!-- carry forward all original fields as hidden inputs -->
+      <input type="hidden" name="name"               value="{{ name }}">
+      <input type="hidden" name="age"                value="{{ payload['Age'] }}">
+      <input type="hidden" name="gender"             value="{{ payload['Gender'] }}">
+      <input type="hidden" name="education_level"    value="{{ payload['Education Level'] }}">
+      <input type="hidden" name="job_title"          value="{{ payload['Job Title'] }}">
+      <input type="hidden" name="experience"         value="{{ payload['Years of Experience'] }}">
+      <input type="hidden" name="predicted_salary"   value="{{ predicted }}">
+
+      <div class="mb-3">
+        <label class="form-label">Actual Salary (₹)</label>
+        <input type="number" step="0.01" name="actual_salary" class="form-control" required>
+      </div>
+
+      <button type="submit" class="btn btn-success">Add Employee</button>
+      <a href="/" class="btn btn-secondary ms-2">Cancel</a>
+    </form>
+  </div>
+</body>
+</html>
