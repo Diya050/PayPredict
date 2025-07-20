@@ -7,50 +7,107 @@
   <style>
     body {
       background-color: #f8f9fa;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     }
+
     h2 {
       font-weight: 600;
+      color: #2c3e50;
     }
+
     .filters {
-      background: #fff;
+      background: #ffffff;
       padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       margin-bottom: 20px;
     }
-    .filters .form-control, .filters .form-select {
+
+    .filters .form-control,
+    .filters .form-select {
+      border-radius: 8px;
+      box-shadow: none;
       margin-bottom: 10px;
     }
+
     .result-count {
       font-weight: 500;
-      margin-bottom: 10px;
-      color: #555;
+      margin-bottom: 15px;
+      color: #6c757d;
     }
+
     table {
-      background: #fff;
-      border-radius: 8px;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       overflow: hidden;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
-    th {
-      background-color: #343a40;
-      color: white;
-    }
-    td, th {
+
+    table th {
+      background-color: #495057;
+      color: #ffffff;
       text-align: center;
       vertical-align: middle;
     }
+
+    table td {
+      text-align: center;
+      vertical-align: middle;
+      color: #495057;
+    }
+
+    table tbody tr:hover {
+      background-color: #f1f3f5;
+    }
+
     .btn-secondary {
-      margin-bottom: 15px;
+      border-radius: 8px;
+      background-color: #5f666dff;
+      color: #ffffff;
+    }
+
+    .btn-secondary:hover {
+      background-color: #4a5055ff;
+      color: white;
+    }
+
+    .btn-edit {
+      background-color: #085589ff;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      padding: 4px 10px;
+    }
+
+    .btn-edit:hover {
+      background-color: #0d3753ff;
+      color: white;
+    }
+
+    .btn-delete {
+      background-color: #dc3545;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      padding: 4px 10px;
+    }
+
+    .btn-delete:hover {
+      background-color: #bb2d3b;
+      color: white;
     }
   </style>
 </head>
 <body>
   <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <h2 class="mb-0">Employee Records</h2>
-      <a href="/" class="btn btn-secondary">Back to Home</a>
-    </div>
+  <h2 class="mb-0">Employee Records</h2>
+  <div>
+    <a href="/dashboard" class="btn btn-success me-2">View Dashboard</a>
+    <a href="/" class="btn btn-secondary">Back to Home</a>
+  </div>
+</div>
+
 
     <div class="filters">
       <div class="row">
@@ -60,6 +117,7 @@
         <div class="col-md-3">
           <select id="jobTitleFilter" class="form-select">
             <option value="">Filter by Job Title</option>
+            <!-- Job Titles -->
             <option>Software Engineer Manager</option>
             <option>Full Stack Engineer</option>
             <option>Senior Software Engineer</option>
@@ -137,8 +195,8 @@
           <td>₹{{ e.actual_salary | round(2) }}</td>
           <td>₹{{ e.predicted_salary | round(2) }}</td>
           <td>
-            <a href="/edit/{{ e.id }}" class="btn btn-sm btn-warning">Edit</a>
-            <a href="/delete/{{ e.id }}" class="btn btn-sm btn-danger">Delete</a>
+            <a href="/edit/{{ e.id }}" class="btn btn-edit btn-sm">Edit</a>
+            <a href="/delete/{{ e.id }}" class="btn btn-delete btn-sm">Delete</a>
           </td>
         </tr>
         {% endfor %}
@@ -171,7 +229,7 @@
         const job = row.cells[5].textContent.toLowerCase();
         const gender = row.cells[2].textContent.toLowerCase();
         const education = row.cells[3].textContent.toLowerCase();
-        const actualSalary = parseFloat(row.cells[6].textContent.replace(/[^0-9.-]+/g,"")) || 0;
+        const actualSalary = parseFloat(row.cells[6].textContent.replace(/[^0-9.-]+/g, "")) || 0;
 
         const matchesName = name.includes(nameValue);
         const matchesJob = !jobTitleValue || job === jobTitleValue;

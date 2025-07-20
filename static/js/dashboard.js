@@ -23,7 +23,24 @@ document.addEventListener("DOMContentLoaded", () => {
     bar: new Chart(document.getElementById("chart-bar"), {
       type: "bar",
       data: { labels: [], datasets: [{ label: "Avg Actual Salary", data: [], backgroundColor: "#119c41ff" }] },
-      options: { indexAxis: 'y', plugins: { legend: { display: true } } }
+      // options: { indexAxis: 'y', plugins: { legend: { display: true } } }
+      options: {
+        indexAxis: 'y',
+        plugins: {
+          legend: { display: false },
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            ticks: {
+              autoSkip: false, // Don’t skip job titles
+              maxTicksLimit: 50 // Optional: limit number of ticks
+            }
+          }
+        }
+      }
+
     }),
     pie: new Chart(document.getElementById("chart-pie"), {
       type: "doughnut",
@@ -44,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
       type: "bar",
       data: { labels: [], datasets: [{ label: "Employee Count", data: [], backgroundColor: "#a05d56" }] },
       options: {
-        plugins: { title: { display: false, text: "Age Distribution (Histogram)" } },
+        plugins: { title: { display: false, text: "Age Distribution" } },
         scales: {
           x: { title: { display: true, text: "Age Groups" } },
           y: { title: { display: true, text: "Number of Employees" } }
