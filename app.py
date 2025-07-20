@@ -265,6 +265,12 @@ def export_excel():
         mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
 
+@app.route('/employees_table')
+def employees_table():
+    employees = Employee.query.all()
+    return render_template('employees.html', employees=employees)
+
+
 # Bootstrap the DB and run
 if __name__ == '__main__':
     with app.app_context():

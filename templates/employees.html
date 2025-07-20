@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Employee Records</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    h2 {
+      font-weight: 600;
+    }
+    .filters {
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    .filters .form-control, .filters .form-select {
+      margin-bottom: 10px;
+    }
+    .result-count {
+      font-weight: 500;
+      margin-bottom: 10px;
+      color: #555;
+    }
+    table {
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    th {
+      background-color: #343a40;
+      color: white;
+    }
+    td, th {
+      text-align: center;
+      vertical-align: middle;
+    }
+    .btn-secondary {
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="mb-0">Employee Records</h2>
+      <a href="/" class="btn btn-secondary">Back to Home</a>
+    </div>
+
+    <div class="filters">
+      <div class="row">
+        <div class="col-md-3">
+          <input type="text" id="nameSearch" class="form-control" placeholder="Search by Name">
+        </div>
+        <div class="col-md-3">
+          <select id="jobTitleFilter" class="form-select">
+            <option value="">Filter by Job Title</option>
+            <option>Software Engineer Manager</option>
+            <option>Full Stack Engineer</option>
+            <option>Senior Software Engineer</option>
+            <option>Senior Project Engineer</option>
+            <option>Back end Developer</option>
+            <option>Data Scientist</option>
+            <option>Software Engineer</option>
+            <option>Front end Developer</option>
+            <option>Marketing Manager</option>
+            <option>Product Manager</option>
+            <option>Data Analyst</option>
+            <option>Web Developer</option>
+            <option>Financial Manager</option>
+            <option>Director of Marketing</option>
+            <option>Director of HR</option>
+            <option>Marketing Coordinator</option>
+            <option>Others</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <select id="genderFilter" class="form-select">
+            <option value="">Filter by Gender</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <select id="educationFilter" class="form-select">
+            <option value="">Filter by Education</option>
+            <option>High School</option>
+            <option>Bachelor's</option>
+            <option>Master's</option>
+            <option>PhD</option>
+          </select>
+        </div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-md-6">
+          <input type="number" id="actualSalaryMin" class="form-control" placeholder="Min. Actual Salary">
+        </div>
+        <div class="col-md-6">
+          <input type="number" id="actualSalaryMax" class="form-control" placeholder="Max. Actual Salary">
+        </div>
+      </div>
+    </div>
+
+    <div class="result-count" id="resultCount">
+      Showing {{ employees|length }} of {{ employees|length }} employees
+    </div>
+
+    <table class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Age</th>
+          <th>Gender</th>
+          <th>Education</th>
+          <th>Experience</th>
+          <th>Job Title</th>
+          <th>Actual Salary</th>
+          <th>Predicted Salary</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for e in employees %}
+        <tr>
+          <td>{{ e.name }}</td>
+          <td>{{ e.age }}</td>
+          <td>{{ e.gender }}</td>
+          <td>{{ e.education_level }}</td>
+          <td>{{ e.experience }}</td>
+          <td>{{ e.job_title }}</td>
+          <td>₹{{ e.actual_salary | round(2) }}</td>
+          <td>₹{{ e.predicted_salary | round(2) }}</td>
+          <td>
+            <a href="/edit/{{ e.id }}" class="btn btn-sm btn-warning">Edit</a>
+            <a href="/delete/{{ e.id }}" class="btn btn-sm btn-danger">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const nameSearch = document.getElementById("nameSearch");
+    const jobTitleFilter = document.getElementById("jobTitleFilter");
+    const genderFilter = document.getElementById("genderFilter");
+    const educationFilter = document.getElementById("educationFilter");
+    const actualSalaryMin = document.getElementById("actualSalaryMin");
+    const actualSalaryMax = document.getElementById("actualSalaryMax");
+    const rows = document.querySelectorAll("table tbody tr");
+    const resultCount = document.getElementById("resultCount");
+
+    function filterTable() {
+      const nameValue = nameSearch.value.toLowerCase();
+      const jobTitleValue = jobTitleFilter.value.toLowerCase();
+      const genderValue = genderFilter.value.toLowerCase();
+      const educationValue = educationFilter.value.toLowerCase();
+      const minSalary = parseFloat(actualSalaryMin.value) || -Infinity;
+      const maxSalary = parseFloat(actualSalaryMax.value) || Infinity;
+
+      let visibleCount = 0;
+
+      rows.forEach(row => {
+        const name = row.cells[0].textContent.toLowerCase();
+        const job = row.cells[5].textContent.toLowerCase();
+        const gender = row.cells[2].textContent.toLowerCase();
+        const education = row.cells[3].textContent.toLowerCase();
+        const actualSalary = parseFloat(row.cells[6].textContent.replace(/[^0-9.-]+/g,"")) || 0;
+
+        const matchesName = name.includes(nameValue);
+        const matchesJob = !jobTitleValue || job === jobTitleValue;
+        const matchesGender = !genderValue || gender === genderValue;
+        const matchesEducation = !educationValue || education === educationValue;
+        const matchesSalary = actualSalary >= minSalary && actualSalary <= maxSalary;
+
+        const isVisible = matchesName && matchesJob && matchesGender && matchesEducation && matchesSalary;
+        row.style.display = isVisible ? "" : "none";
+
+        if (isVisible) visibleCount++;
+      });
+
+      resultCount.textContent = `Showing ${visibleCount} of ${rows.length} employees`;
+    }
+
+    nameSearch.addEventListener("input", filterTable);
+    jobTitleFilter.addEventListener("change", filterTable);
+    genderFilter.addEventListener("change", filterTable);
+    educationFilter.addEventListener("change", filterTable);
+    actualSalaryMin.addEventListener("input", filterTable);
+    actualSalaryMax.addEventListener("input", filterTable);
+  </script>
+</body>
+</html>

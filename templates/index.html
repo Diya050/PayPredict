@@ -62,7 +62,27 @@
           </div>
           <div class="mb-3">
             <label class="form-label">Job Title</label>
-            <input type="text" class="form-control" name="job_title" required>
+            <label class="form-label">Job Title</label>
+<select class="form-select" name="job_title" required>
+  <option value="">Select Job Title</option>
+  <option>Others</option>
+  <option>Software Engineer Manager</option>
+  <option>Full Stack Engineer</option>
+  <option>Senior Software Engineer</option>
+  <option>Senior Project Engineer</option>
+  <option>Back end Developer</option>
+  <option>Data Scientist</option>
+  <option>Software Engineer</option>
+  <option>Front end Developer</option>
+  <option>Marketing Manager</option>
+  <option>Product Manager</option>
+  <option>Data Analyst</option>
+  <option>Web Developer</option>
+  <option>Financial Manager</option>
+  <option>Director of Marketing</option>
+  <option>Director of HR</option>
+  <option>Marketing Coordinator</option>
+</select>
           </div>
           <button type="submit" class="btn btn-primary">Predict Salary</button>
         </form>
@@ -86,44 +106,8 @@
         </form>
       </div>
     </div>
-
     <a href="/dashboard" class="btn btn-success mb-4">View Dashboard</a>
-
-    <!-- Employee Table -->
-    <h3>Employee Records</h3>
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Age</th>
-          <th>Gender</th>
-          <th>Education</th>
-          <th>Experience</th>
-          <th>Job Title</th>
-          <th>Actual Salary</th>
-          <th>Predicted Salary</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for e in employees %}
-        <tr>
-          <td>{{ e.name }}</td>
-          <td>{{ e.age }}</td>
-          <td>{{ e.gender }}</td>
-          <td>{{ e.education_level }}</td>
-          <td>{{ e.experience }}</td>
-          <td>{{ e.job_title }}</td>
-          <td>₹ {{ '%.2f'|format(e.actual_salary) }}</td>
-          <td>₹ {{ '%.2f'|format(e.predicted_salary) }}</td>
-          <td>
-            <a href="/edit/{{ e.id }}" class="btn btn-sm btn-warning">Edit</a>
-            <a href="/delete/{{ e.id }}" class="btn btn-sm btn-danger">Delete</a>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+    <a href="/employees_table" class="btn btn-info mb-4"">View Employees Table</a>
+    </div>
 </body>
 </html>
