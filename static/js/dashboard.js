@@ -13,25 +13,70 @@ document.addEventListener("DOMContentLoaded", () => {
       type: "scatter",
       data: { datasets: [] },
       options: {
-        plugins: { title: { display: true, text: 'Predicted vs Actual Salary' }},
-        scales: { x: { title: { display: true, text: 'Actual Salary (₹)' }},
-                  y: { title: { display: true, text: 'Predicted Salary (₹)' }}}
+        plugins: { title: { display: true, text: 'Predicted vs Actual Salary' } },
+        scales: {
+          x: { title: { display: true, text: 'Actual Salary (₹)' } },
+          y: { title: { display: true, text: 'Predicted Salary (₹)' } }
+        }
       }
     }),
     bar: new Chart(document.getElementById("chart-bar"), {
       type: "bar",
-      data: { labels: [], datasets: [{ label: "Avg Actual Salary", data: [], backgroundColor: "#4e79a7" }] },
-      options: { indexAxis: 'y', plugins: { legend: { display: false }} }
+      data: { labels: [], datasets: [{ label: "Avg Actual Salary", data: [], backgroundColor: "#119c41ff" }] },
+      options: { indexAxis: 'y', plugins: { legend: { display: true } } }
     }),
     pie: new Chart(document.getElementById("chart-pie"), {
       type: "doughnut",
       data: { labels: [], datasets: [{ data: [], backgroundColor: ["#f28e2b", "#e15759", "#76b7b2"] }] },
-      options: { plugins: { legend: { position: 'bottom' }} }
+      options: { plugins: { legend: { position: 'bottom' } } }
     }),
     line: new Chart(document.getElementById("chart-line"), {
       type: "line",
       data: { labels: [], datasets: [{ label: "Avg Salary", data: [], borderColor: "#59a14f", tension: 0.3 }] },
-      options: { plugins: { legend: { display: false }} }
+      options: { plugins: { legend: { display: false } } }
+    }),
+    eduBar: new Chart(document.getElementById("chart-box"), {
+      type: "bar",
+      data: { labels: [], datasets: [{ label: "Avg Salary by Education", data: [], backgroundColor: "#edc948" }] },
+      options: { plugins: { legend: { display: false } } }
+    }),
+    age: new Chart(document.getElementById("chart-age"), {
+      type: "bar",
+      data: { labels: [], datasets: [{ label: "Employee Count", data: [], backgroundColor: "#a05d56" }] },
+      options: {
+        plugins: { title: { display: false, text: "Age Distribution (Histogram)" } },
+        scales: {
+          x: { title: { display: true, text: "Age Groups" } },
+          y: { title: { display: true, text: "Number of Employees" } }
+        }
+      }
+    }),
+
+    genderStack: new Chart(document.getElementById("chart-stacked-bar"), {
+      type: "bar",
+      data: { labels: [], datasets: [] },
+      options: {
+        indexAxis: 'y', // horizontal
+        plugins: {
+          title: { display: false, text: "Gender Ratio per Job Title" },
+          tooltip: {
+            callbacks: {
+              label: ctx => `${ctx.dataset.label}: ${ctx.parsed.x.toFixed(1)}%`
+            }
+          },
+          legend: { position: 'bottom' }
+        },
+        responsive: true,
+        scales: {
+          x: {
+            stacked: true,
+            ticks: {
+              callback: value => `${value}%`
+            }
+          },
+          y: { stacked: true }
+        }
+      }
     })
   };
 
@@ -53,7 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const avgActual = data.reduce((sum, d) => sum + d.actual_salary, 0) / total || 0;
     const avgPred = data.reduce((sum, d) => sum + d.predicted_salary, 0) / total || 0;
     const r2 = 1 - data.reduce((sum, d) => sum + Math.pow(d.actual_salary - d.predicted_salary, 2), 0) /
-                  data.reduce((sum, d) => sum + Math.pow(d.actual_salary - avgActual, 2), 0);
+      data.reduce((sum, d) => sum + Math.pow(d.actual_salary - avgActual, 2), 0);
     document.getElementById("kpi-total").innerText = total;
     document.getElementById("kpi-avg-actual").innerText = `₹${avgActual.toFixed(0)}`;
     document.getElementById("kpi-avg-predicted").innerText = `₹${avgPred.toFixed(0)}`;
@@ -89,6 +134,26 @@ document.addEventListener("DOMContentLoaded", () => {
     charts.pie.data.datasets[0].data = salaryByGender;
     charts.pie.update();
 
+    // Histogram: Age Distribution
+    const ageBins = ["20-25", "26-30", "31-35", "36-40", "41-45", "46-50", "51+"];
+    const ageCounts = [0, 0, 0, 0, 0, 0, 0];
+
+    data.forEach(d => {
+      const age = Math.floor(d.age); // Assuming "age" field exists
+      if (age >= 20 && age <= 25) ageCounts[0]++;
+      else if (age >= 26 && age <= 30) ageCounts[1]++;
+      else if (age >= 31 && age <= 35) ageCounts[2]++;
+      else if (age >= 36 && age <= 40) ageCounts[3]++;
+      else if (age >= 41 && age <= 45) ageCounts[4]++;
+      else if (age >= 46 && age <= 50) ageCounts[5]++;
+      else if (age >= 51) ageCounts[6]++;
+    });
+
+    charts.age.data.labels = ageBins;
+    charts.age.data.datasets[0].data = ageCounts;
+    charts.age.update();
+
+
     // Line: Experience vs Avg Salary
     const expBins = [...new Set(data.map(d => Math.round(d.experience)))].sort((a, b) => a - b);
     const avgByExp = expBins.map(exp => {
@@ -98,6 +163,33 @@ document.addEventListener("DOMContentLoaded", () => {
     charts.line.data.labels = expBins;
     charts.line.data.datasets[0].data = avgByExp;
     charts.line.update();
+
+    // Avg Salary by Education Level
+    const edus = [...new Set(data.map(d => d.education_level))];
+    const avgByEdu = edus.map(edu => {
+      const group = data.filter(d => d.education_level === edu);
+      return group.reduce((sum, d) => sum + d.actual_salary, 0) / group.length;
+    });
+    charts.eduBar.data.labels = edus;
+    charts.eduBar.data.datasets[0].data = avgByEdu;
+    charts.eduBar.update();
+
+    // Gender Ratio per Job Title (100% stacked)
+    const genderRatioData = genders.map(gender => {
+      return jobs.map(job => {
+        const group = data.filter(d => d.job_title === job);
+        const genderCount = group.filter(d => d.gender === gender).length;
+        const totalCount = group.length || 1; // prevent div by zero
+        return (genderCount / totalCount) * 100; // percentage
+      });
+    });
+    charts.genderStack.data.labels = jobs;
+    charts.genderStack.data.datasets = genders.map((gender, idx) => ({
+      label: gender,
+      data: genderRatioData[idx],
+      backgroundColor: ["#3a0fafff", "#ece11fff", "#ed831aff"][idx % 3]
+    }));
+    charts.genderStack.update();
   }
 
   function applyFilters() {
@@ -110,7 +202,6 @@ document.addEventListener("DOMContentLoaded", () => {
     updateCharts(filtered);
   }
 
-  // Load Data
   fetch(API_URL).then(res => res.json()).then(data => {
     allData = data;
     loadFilters(data);
