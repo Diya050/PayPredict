@@ -3,40 +3,141 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>HR Salary Insights Dashboard</title>
+  <title>PayPredict Dashboard</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="{{ url_for('static', filename='js/dashboard.js') }}" defer></script>
-</head>
-<style>
+  <style>
+    body {
+      background-color: #0f172a;
+      color: #e2e8f0;
+    }
+
     h1 {
       font-weight: 600;
-      color: #2c3e50;
+      color: #e2e8f0;
     }
+
     .btn-secondary {
       border-radius: 8px;
-      background-color: #5f666dff;
-      color: #ffffff;
+      background-color: #334155;
+      color: #f1f5f9;
     }
 
     .btn-secondary:hover {
-      background-color: #4a5055ff;
+      background-color: #475569;
       color: white;
     }
-</style>
-<body>
-  
-  <div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-  <h1 class="mb-0">HR Salary Insights Dashboard</h1>
-  <a href="/" class="btn btn-secondary">Back to Home</a>
-</div>
 
+    .navbar-brand {
+  font-size: 1.6rem; /* Bigger logo text */
+  font-weight: 700;
+}
+
+.navbar-nav .nav-link {
+  font-size: 1.05rem;  /* Slightly larger nav items */
+  font-weight: 500;
+  color: #f1f5f9;
+  transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #00b894;
+}
+
+.navbar-nav .nav-link.active {
+  color: #00b894 !important;
+  border-bottom: 2px solid #00b894;
+  padding-bottom: 3px;
+}
+
+    .card {
+      background-color: #1e293b;
+      border: none;
+    }
+
+    .card-header {
+      background-color: #1e293b;
+      color: #f8fafc;
+      font-weight: 500;
+      border-bottom: 1px solid #334155;
+    }
+    /* Custom arrow for <select> */
+.form-select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1.2rem;
+  padding-right: 2.5rem; /* Ensure arrow doesn't overlap text */
+}
+    .form-select,
+    .form-label {
+      background-color: #1e293b;
+      color: #f1f5f9;
+      border: 1px solid #202a37ff;
+      padding: 6px;
+    }
+
+    .form-select:focus {
+      box-shadow: none;
+      border-color: #64748b;
+    }
+
+    select option {
+      background-color: #1e293b;
+      color: #f1f5f9;
+    }
+
+    .card-body {
+      color: #f1f5f9;
+    }
+
+    canvas {
+      background-color: #0f172a;
+    }
+
+    .shadow {
+      box-shadow: 0 0 12px rgba(15, 23, 42, 0.9) !important;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg sticky-top navbar-dark shadow-sm" style="background-color: #1b263b;">
+  <div class="container-fluid px-4">
+    <a class="navbar-brand fw-bold" href="/" style="color: #00b894;">PayPredict</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav gap-2">
+        <li class="nav-item">
+          <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.path.startswith('/employees_table') %}active{% endif %}" href="/employees_table">View Employees</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.path.startswith('/dashboard') %}active{% endif %}" href="/dashboard">View Dashboard</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  <div class="container mt-4">
+    <div class="text-center mb-4">
+      <h1 class="mb-0">HR Salary Insights Dashboard</h1>
+    </div>
 
     <!-- KPI Cards -->
     <div class="row text-center">
       <div class="col-md-3 mb-3">
-        <div class="card text-white bg-primary shadow">
+        <div class="card text-white shadow" style="background-color: #0ea5e9;">
           <div class="card-body">
             <h6>Total Employees</h6>
             <h3 id="kpi-total">--</h3>
@@ -44,7 +145,7 @@
         </div>
       </div>
       <div class="col-md-3 mb-3">
-        <div class="card text-white bg-success shadow">
+        <div class="card text-white shadow" style="background-color: #10b981;">
           <div class="card-body">
             <h6>Avg Actual Salary</h6>
             <h3 id="kpi-avg-actual">--</h3>
@@ -52,7 +153,7 @@
         </div>
       </div>
       <div class="col-md-3 mb-3">
-        <div class="card text-white bg-warning shadow">
+        <div class="card text-white shadow" style="background-color: #f59e0b;">
           <div class="card-body">
             <h6>Avg Predicted Salary</h6>
             <h3 id="kpi-avg-predicted">--</h3>
@@ -60,7 +161,7 @@
         </div>
       </div>
       <div class="col-md-3 mb-3">
-        <div class="card text-white bg-danger shadow">
+        <div class="card text-white shadow" style="background-color: #ef4444;">
           <div class="card-body">
             <h6>Prediction Accuracy</h6>
             <h3 id="kpi-accuracy">--%</h3>
@@ -97,15 +198,16 @@
         <div class="card shadow">
           <div class="card-header">Predicted vs Actual Salary</div>
           <div class="card-body">
-            <canvas id="chart-scatter" style="max-height: 300px;"></canvas>
+            <canvas id="chart-scatter"></canvas>
           </div>
         </div>
       </div>
+
       <div class="col-md-6 mb-4">
         <div class="card shadow">
           <div class="card-header">Salary Distribution by Education Level</div>
           <div class="card-body">
-            <canvas id="chart-box" style="max-height: 300px;"></canvas>
+            <canvas id="chart-box"></canvas>
           </div>
         </div>
       </div>
@@ -114,49 +216,47 @@
         <div class="card shadow">
           <div class="card-header">Salary Distribution by Gender</div>
           <div class="card-body">
-            <canvas id="chart-pie" style="max-height: 300px;"></canvas>
+            <canvas id="chart-pie" style="max-height: 350px"></canvas>
           </div>
         </div>
       </div>
+
       <div class="col-md-6 mb-4">
         <div class="card shadow">
           <div class="card-header">Avg Salary by Job Title</div>
           <div class="card-body">
-            <canvas id="chart-bar" style="min-height: 300px;"></canvas>
+            <canvas id="chart-bar" style="min-height: 350px"></canvas>
           </div>
         </div>
       </div>
+
       <div class="col-md-6 mb-4">
-  <div class="card shadow">
-    <div class="card-header">Employee Age Distribution</div>
-    <div class="card-body">
-      <canvas id="chart-age" style="max-height: 400px;"></canvas>
-    </div>
-  </div>
-</div>
+        <div class="card shadow">
+          <div class="card-header">Employee Age Distribution</div>
+          <div class="card-body">
+            <canvas id="chart-age"></canvas>
+          </div>
+        </div>
+      </div>
 
       <div class="col-md-6 mb-4">
         <div class="card shadow">
           <div class="card-header">Experience vs Avg Salary</div>
           <div class="card-body">
-            <canvas id="chart-line" style="max-height: 300px;"></canvas>
+            <canvas id="chart-line"></canvas>
           </div>
         </div>
       </div>
-      
-      <div class="col-md-12 mb-4">
-  <div class="card shadow">
-    <div class="card-header">Gender Ratio per Job Title</div>
-    <div class="card-body">
-      <canvas id="chart-stacked-bar" style="max-height: 400px;"></canvas>
-    </div>
-  </div>
-</div>
 
+      <div class="col-md-12 mb-4">
+        <div class="card shadow">
+          <div class="card-header">Gender Ratio per Job Title</div>
+          <div class="card-body">
+            <canvas id="chart-stacked-bar"></canvas>
+          </div>
+        </div>
       </div>
     </div>
-
-    
   </div>
 </body>
 </html>

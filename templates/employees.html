@@ -6,73 +6,163 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
-      background-color: #f8f9fa;
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #0d1b2a;
+      font-family: 'Poppins', sans-serif;
+      color: #f1f1f1;
+      font-size: 1.05rem;
     }
 
     h2 {
       font-weight: 600;
-      color: #2c3e50;
+      color: #f8f9fa;
+      font-size: 2rem;
     }
 
     .filters {
-      background: #ffffff;
-      padding: 15px;
+      background-color: #1b263b;
+      padding: 20px;
       border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
       margin-bottom: 20px;
     }
 
-    .filters .form-control,
-    .filters .form-select {
+    .filters-title {
+      font-weight: 600;
+      font-size: 1.25rem;
+      color: #f1f5f9;
+      margin-bottom: 12px;
+    }
+
+    .form-control,
+    .form-select {
+      background-color: #1e2e46;
+      color: #ffffff;
+      border: 1px solid #456799ff;
       border-radius: 8px;
-      box-shadow: none;
-      margin-bottom: 10px;
+      font-size: 0.95rem;
+      padding: 10px;
+    }
+
+    .form-select {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 1.2rem;
+      padding-right: 2.5rem;
+    }
+
+    .form-control::placeholder {
+      color: #cbd5e1;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      border-color: #00b894;
+      box-shadow: 0 0 0 0.2rem rgba(0, 184, 148, 0.25);
     }
 
     .result-count {
       font-weight: 500;
+      font-size: 0.95rem;
       margin-bottom: 15px;
-      color: #6c757d;
+      color: #94a3b8;
+    }
+
+    .navbar-brand {
+      font-size: 1.6rem;
+      font-weight: 700;
+    }
+
+    .navbar-nav .nav-link {
+      font-size: 1.05rem;
+      font-weight: 500;
+      color: #f1f5f9;
+      transition: color 0.3s ease;
+    }
+
+    .navbar-nav .nav-link:hover {
+      color: #00b894;
+    }
+
+    .navbar-nav .nav-link.active {
+      color: #00b894 !important;
+      border-bottom: 2px solid #00b894;
+      padding-bottom: 3px;
     }
 
     table {
-      background: #ffffff;
+      background-color: #1b263b;
       border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
       overflow: hidden;
     }
 
-    table th {
-      background-color: #495057;
-      color: #ffffff;
+    table th,
+    table td {
+      font-size: 0.95rem;
+      padding: 0.75rem;
       text-align: center;
       vertical-align: middle;
     }
 
-    table td {
-      text-align: center;
-      vertical-align: middle;
-      color: #495057;
+    table td:nth-child(7),
+    table td:nth-child(8) {
+      text-align: right;
+    }
+
+    table thead th {
+      background-color: #14213d;
+      color: #ffffff;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    table tbody td {
+      background-color: #1e2e46;
+      color: #e2e8f0;
+    }
+
+    table tbody tr {
+      border-bottom: 1px solid #2e3a50;
+    }
+
+    table tbody tr:last-child {
+      border-bottom: none;
     }
 
     table tbody tr:hover {
-      background-color: #f1f3f5;
+      background-color: #253044;
     }
 
     .btn-secondary {
       border-radius: 8px;
-      background-color: #5f666dff;
+      background-color: #5c6165ff;
       color: #ffffff;
+      border: none;
     }
 
     .btn-secondary:hover {
-      background-color: #4a5055ff;
+      background-color: #484c4fff;
+      color: #ffffff;
+    }
+
+    .btn-success {
+      background-color: #0f967bff;
+      border: none;
+      border-radius: 8px;
       color: white;
     }
 
+    .btn-success:hover {
+      background-color: #0a7c64;
+    }
+
     .btn-edit {
-      background-color: #085589ff;
+      background-color: #236685ff;
       color: #ffffff;
       border: none;
       border-radius: 6px;
@@ -80,8 +170,7 @@
     }
 
     .btn-edit:hover {
-      background-color: #0d3753ff;
-      color: white;
+      background-color: #0f5172;
     }
 
     .btn-delete {
@@ -94,30 +183,52 @@
 
     .btn-delete:hover {
       background-color: #bb2d3b;
-      color: white;
     }
   </style>
 </head>
-<body>
-  <div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-  <h2 class="mb-0">Employee Records</h2>
-  <div>
-    <a href="/dashboard" class="btn btn-success me-2">View Dashboard</a>
-    <a href="/" class="btn btn-secondary">Back to Home</a>
-  </div>
-</div>
 
+<body>
+  <nav class="navbar navbar-expand-lg sticky-top navbar-dark shadow-sm" style="background-color: #1b263b;">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand fw-bold" href="/" style="color: #00b894;">PayPredict</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav gap-2">
+          <li class="nav-item">
+            <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.path.startswith('/employees_table') %}active{% endif %}" href="/employees_table">View Employees</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.path.startswith('/dashboard') %}active{% endif %}" href="/dashboard">View Dashboard</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-5">
+    <div class="text-center mb-4">
+      <h2>Employee Records</h2>
+    </div>
 
     <div class="filters">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <span class="filters-title">Filter Records</span>
+        <button class="btn btn-sm btn-secondary" onclick="clearFilters()">Reset Filters</button>
+      </div>
       <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-3 mb-2">
           <input type="text" id="nameSearch" class="form-control" placeholder="Search by Name">
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 mb-2">
           <select id="jobTitleFilter" class="form-select">
             <option value="">Filter by Job Title</option>
-            <!-- Job Titles -->
             <option>Software Engineer Manager</option>
             <option>Full Stack Engineer</option>
             <option>Senior Software Engineer</option>
@@ -137,7 +248,7 @@
             <option>Others</option>
           </select>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 mb-2">
           <select id="genderFilter" class="form-select">
             <option value="">Filter by Gender</option>
             <option>Male</option>
@@ -145,7 +256,7 @@
             <option>Other</option>
           </select>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 mb-2">
           <select id="educationFilter" class="form-select">
             <option value="">Filter by Education</option>
             <option>High School</option>
@@ -156,10 +267,10 @@
         </div>
       </div>
       <div class="row mt-2">
-        <div class="col-md-6">
+        <div class="col-md-6 mb-2">
           <input type="number" id="actualSalaryMin" class="form-control" placeholder="Min. Actual Salary">
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6 mb-2">
           <input type="number" id="actualSalaryMax" class="form-control" placeholder="Max. Actual Salary">
         </div>
       </div>
@@ -244,6 +355,16 @@
       });
 
       resultCount.textContent = `Showing ${visibleCount} of ${rows.length} employees`;
+    }
+
+    function clearFilters() {
+      nameSearch.value = "";
+      jobTitleFilter.value = "";
+      genderFilter.value = "";
+      educationFilter.value = "";
+      actualSalaryMin.value = "";
+      actualSalaryMax.value = "";
+      filterTable();
     }
 
     nameSearch.addEventListener("input", filterTable);

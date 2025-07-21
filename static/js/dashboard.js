@@ -1,4 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
+  Chart.defaults.color = '#f1f5f9'; // Light font color for dark mode
+Chart.defaults.plugins.legend.labels.color = '#f1f5f9'; // Legend color
+Chart.defaults.plugins.title.color = '#f1f5f9'; // Chart title color
+
   const API_URL = "/api/employees";
   let allData = [];
 
@@ -22,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }),
     bar: new Chart(document.getElementById("chart-bar"), {
       type: "bar",
-      data: { labels: [], datasets: [{ label: "Avg Actual Salary", data: [], backgroundColor: "#119c41ff" }] },
+      data: { labels: [], datasets: [{ label: "Avg Actual Salary", data: [], backgroundColor: "#42f982ff" }] },
       // options: { indexAxis: 'y', plugins: { legend: { display: true } } }
       options: {
         indexAxis: 'y',
@@ -44,12 +48,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }),
     pie: new Chart(document.getElementById("chart-pie"), {
       type: "doughnut",
-      data: { labels: [], datasets: [{ data: [], backgroundColor: ["#f28e2b", "#e15759", "#76b7b2"] }] },
+      data: { labels: [], datasets: [{ data: [], backgroundColor: ["#f29e4bff", "#ff6669ff", "#30baafff"] }] },
       options: { plugins: { legend: { position: 'bottom' } } }
     }),
     line: new Chart(document.getElementById("chart-line"), {
       type: "line",
-      data: { labels: [], datasets: [{ label: "Avg Salary", data: [], borderColor: "#59a14f", tension: 0.3 }] },
+      data: { labels: [], datasets: [{ label: "Avg Salary", data: [], borderColor: "#b6ef6cf5", tension: 0.3 }] },
       options: { plugins: { legend: { display: false } } }
     }),
     eduBar: new Chart(document.getElementById("chart-box"), {
@@ -59,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }),
     age: new Chart(document.getElementById("chart-age"), {
       type: "bar",
-      data: { labels: [], datasets: [{ label: "Employee Count", data: [], backgroundColor: "#a05d56" }] },
+      data: { labels: [], datasets: [{ label: "Employee Count", data: [], backgroundColor: "#14e4c8ff" }] },
       options: {
         plugins: { title: { display: false, text: "Age Distribution" } },
         scales: {
@@ -127,7 +131,8 @@ document.addEventListener("DOMContentLoaded", () => {
     charts.scatter.data.datasets = [{
       label: 'Employees',
       data: data.map(d => ({ x: d.actual_salary, y: d.predicted_salary })),
-      backgroundColor: "#4e79a7"
+      backgroundColor: "#a0c9f2ff",
+      borderColor: "#1d334aff"
     }];
     charts.scatter.update();
 
@@ -204,7 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
     charts.genderStack.data.datasets = genders.map((gender, idx) => ({
       label: gender,
       data: genderRatioData[idx],
-      backgroundColor: ["#3a0fafff", "#ece11fff", "#ed831aff"][idx % 3]
+      backgroundColor: ["#44a2f4ff", "#ece11fff", "#f9810aff"][idx % 3]
     }));
     charts.genderStack.update();
   }
