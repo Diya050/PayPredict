@@ -8,7 +8,7 @@ from flask import (
 from flask_sqlalchemy import SQLAlchemy
 import joblib, pandas as pd, os
 from io import BytesIO
-
+import traceback
 
 
 app = Flask(__name__)
@@ -243,23 +243,31 @@ def upload_csv():
         flash('No file selected', 'danger')
         return redirect(url_for('index'))
 
-    df = pd.read_csv(file)
-    # rename variants
-    df.rename(columns={
-        'YearsExperience':  'Years of Experience',
-        'Years_Experience': 'Years of Experience',
-        'Experience':       'Years of Experience',
-        'EducationLevel':   'Education Level',
-        'JobTitle':         'Job Title'
-    }, inplace=True)
+    try:
+        # 1) Read CSV
+        df = pd.read_csv(file)
+        app.logger.info(f'CSV columns: {list(df.columns)}')        # ← log the headers
+        app.logger.info(f'First few rows:\n{df.head().to_dict()}')  # ← log a sample
 
-    required = ['Age','Gender','Education Level','Job Title','Years of Experience','Salary']
-    added = 0
+        # 2) Rename variants
+        df.rename(columns={
+            'YearsExperience':  'Years of Experience',
+            'Years_Experience': 'Years of Experience',
+            'Experience':       'Years of Experience',
+            'EducationLevel':   'Education Level',
+            'JobTitle':         'Job Title'
+        }, inplace=True)
 
-    for idx, row in df.iterrows():
-        if any(col not in row or pd.isna(row[col]) for col in required):
-            continue
-        try:
+        # 3) Required fields check
+        required = ['Age','Gender','Education Level','Job Title','Years of Experience','Salary']
+        added = 0
+
+        for idx, row in df.iterrows():
+            if any(col not in row or pd.isna(row[col]) for col in required):
+                app.logger.debug(f"Skipping row {idx} — missing required field")
+                continue
+
+            # 4) Build payload & commit
             payload = {
                 'Age': int(row['Age']),
                 'Gender': row['Gender'],
@@ -268,28 +276,32 @@ def upload_csv():
                 'Years of Experience': float(row['Years of Experience'])
             }
             actual = float(row['Salary'])
-        except (ValueError, TypeError):
-            continue
+            pred   = predict_salary(payload)
 
-        pred = predict_salary(payload)
-        name = f"Employee {idx+1}"
-        emp = Employee(
-            name=name,
-            age=payload['Age'],
-            gender=payload['Gender'],
-            education_level=payload['Education Level'],
-            job_title=payload['Job Title'],
-            experience=payload['Years of Experience'],
-            actual_salary=actual,
-            predicted_salary=pred
-        )
-        db.session.add(emp)
-        added += 1
+            emp = Employee(
+                name=f"Employee {idx+1}",
+                age=payload['Age'],
+                gender=payload['Gender'],
+                education_level=payload['Education Level'],
+                job_title=payload['Job Title'],
+                experience=payload['Years of Experience'],
+                actual_salary=actual,
+                predicted_salary=pred
+            )
+            db.session.add(emp)
+            added += 1
 
-    db.session.commit()
-    skipped = len(df) - added
-    flash(f'Successfully uploaded {added} employees (skipped {skipped} invalid rows).', 'success')
-    return redirect(url_for('index'))
+        db.session.commit()
+        skipped = len(df) - added
+        flash(f'Successfully uploaded {added} employees (skipped {skipped} invalid rows).', 'success')
+        return redirect(url_for('index'))
+
+    except Exception as e:
+        # Print full traceback to your Render logs
+        traceback.print_exc()
+        app.logger.error(f"Upload error: {e}")
+        flash(f'Error processing CSV: {e}', 'danger')
+        return redirect(url_for('index'))
 
 
 # Export CSV
