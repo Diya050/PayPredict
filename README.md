@@ -147,6 +147,15 @@ python app.py
 
 
 ---
+## Model Training
+
+Jupyter Notebook for training and evaluating the Employee Salary Prediction model:
+
+[Salary Model Training Notebook](SalaryPrediction.ipynb)
+
+Kaggle Dataset Used: [Salary_Data.csv](https://www.kaggle.com/datasets/mohithsairamreddy/salary-data)
+
+---
 
 ## Web App Previews
 
