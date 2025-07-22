@@ -31,10 +31,9 @@ class Employee(db.Model):
     predicted_salary = db.Column(db.Float)
 
 # --- Prediction Helper ---
-def predict_salary(data: dict) -> str:
+def predict_salary(data: dict) -> float:
     df_enc = encoder.transform(pd.DataFrame([data], columns=FEATURES))
-    predicted = float(model.predict(df_enc)[0])
-    return f"{predicted:,.2f} per month"
+    return float(model.predict(df_enc)[0])
 
 
 # --- Routes ---

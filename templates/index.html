@@ -17,27 +17,27 @@
     color: #f8f9fa;
   }
 
-     .navbar-brand {
-  font-size: 1.6rem; /* Bigger logo text */
-  font-weight: 700;
-}
+  .navbar-brand {
+    font-size: 1.6rem; /* Bigger logo text */
+    font-weight: 700;
+  }
 
-.navbar-nav .nav-link {
-  font-size: 1.05rem;  /* Slightly larger nav items */
-  font-weight: 500;
-  color: #f1f5f9;
-  transition: color 0.3s ease;
-}
+  .navbar-nav .nav-link {
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: #f1f5f9;
+    transition: color 0.3s ease;
+  }
 
-.navbar-nav .nav-link:hover {
-  color: #00b894;
-}
+  .navbar-nav .nav-link:hover {
+    color: #00b894;
+  }
 
-.navbar-nav .nav-link.active {
-  color: #00b894 !important;
-  border-bottom: 2px solid #00b894;
-  padding-bottom: 3px;
-}
+  .navbar-nav .nav-link.active {
+    color: #00b894 !important;
+    border-bottom: 2px solid #00b894;
+    padding-bottom: 3px;
+  }
 
   .card,
   .form-container {
@@ -140,7 +140,25 @@
   }
 
   .alert {
-    border-radius: 8px;
+    border-radius: 12px;
+    font-size: 1.05rem;
+    font-weight: 500;
+    padding: 1rem 1.25rem;
+    border: none;
+  }
+
+  .alert-success {
+    background-color: #d1e7dd;
+    color: #0f5132;
+  }
+
+  .alert-danger {
+    background-color: #f8d7da;
+    color: #842029;
+  }
+
+  .btn-close {
+    filter: brightness(0) saturate(100%) invert(24%) sepia(56%) saturate(1926%) hue-rotate(87deg) brightness(98%) contrast(86%);
   }
 
   .container {
@@ -155,6 +173,7 @@
     color: #05d1a8ff !important;
   }
 </style>
+
 
 </head>
 <body>
@@ -182,17 +201,19 @@
   </div>
 </nav>
 
-  {% with messages = get_flashed_messages(with_categories=true) %}
+{% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     <div class="container mt-3">
       {% for category, msg in messages %}
-        <div class="alert alert-{{ category }}" role="alert">
+        <div class="alert alert-{{ category }} alert-dismissible fade show custom-flash" role="alert">
           {{ msg }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
       {% endfor %}
     </div>
   {% endif %}
-  {% endwith %}
+{% endwith %}
+
 
   <div class="container mt-5">
     <h1 class="text-center mb-4">Employee Salary Predictor</h1>
