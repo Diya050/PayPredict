@@ -107,6 +107,7 @@ PayPredict/
 ├── instance/
 │   └── database.db
 ├── README.md
+├── Previews
 ├── Salary_Data.csv
 └── SalaryPrediction.ipynb
 
