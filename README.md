@@ -9,6 +9,10 @@ The application enables **real-time salary predictions** during data entry, stre
 <img width="1863" height="1011" alt="home_page_1" src="Previews/home_page_1.png" />
 <img width="1863" height="1011" alt="home_page_1" src="Previews/home_page_2.png" />
 
+## Add Employee View:
+<img width="1863" height="1011" alt="home_page_1" src="Previews/add_employee_1.png" />
+<img width="1863" height="1011" alt="home_page_1" src="Previews/add_employee_2.png" />
+<img width="1863" height="1011" alt="home_page_1" src="Previews/add_employee_3.png" />
 
 
 ## Employee Records View:
@@ -21,10 +25,6 @@ The application enables **real-time salary predictions** during data entry, stre
 <img width="1863" height="1011" alt="home_page_1" src="Previews/view_employees_filter.png" />
 
 
-## Add Employee View:
-<img width="1863" height="1011" alt="home_page_1" src="Previews/add_employee_1.png" />
-<img width="1863" height="1011" alt="home_page_1" src="Previews/add_employee_2.png" />
-<img width="1863" height="1011" alt="home_page_1" src="Previews/add_employee_3.png" />
 
 
 
