@@ -291,6 +291,11 @@ def upload_csv():
     flash(f'Successfully uploaded {added} employees (skipped {skipped} invalid rows).', 'success')
     return redirect(url_for('index'))
 
+@app.route('/init_db')
+def init_db():
+    db.create_all()
+    return 'Database tables created.'
+
 # Export CSV
 @app.route('/export')
 def export_csv():
