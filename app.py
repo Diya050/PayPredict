@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 from flask import (
     Flask, render_template, request, redirect, url_for,
     jsonify, flash, send_file, Response
@@ -6,9 +9,27 @@ from flask_sqlalchemy import SQLAlchemy
 import joblib, pandas as pd, os
 from io import BytesIO
 
+
+
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+
+# Use DATABASE_URL env var if set, otherwise SQLite
+db_url = os.environ.get('DATABASE_URL')
+if db_url:
+    SQLALCHEMY_DATABASE_URI = db_url  # e.g. postgres://...?
+else:
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///paypredict.db'
+
+app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
+
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev_key')
+
+# if 'postgresql' in app.config['SQLALCHEMY_DATABASE_URI']:
+#     app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+#         'connect_args': {'sslmode': 'require'}
+#     }
+
+
 db = SQLAlchemy(app)
 
 # Load ML artifacts
