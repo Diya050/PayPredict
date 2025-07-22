@@ -40,21 +40,21 @@
 
 ## Key Features
 
-* **CRUD Employee Records**
+* **CRUD Employee Records:**<br>
   Full support for adding, viewing, updating, and deleting employee profiles. Each record includes both actual and predicted salary values.
   
-* **Filterable & Searchable Table**
-  Quickly locate employees using:
+* **Filterable & Searchable Table:**<br>
+  Quickly locate employees using:<br>
 
   * Search by **name**
   * Multi‑filters: **Job Title**, **Gender**, **Education**
-  * Salary range filters (**Min/Max Actual Salary**)
+  * Salary range filters (**Min/Max Actual Salary**, **Min/Max Age**, **Min/Max Experience**)
   * Dynamic result counter showing how many entries match your criteria
 
-* **Bulk CSV Upload & Export**
+* **Bulk CSV Upload & Export:**<br>
   Efficiently import large datasets in CSV format and export records to CSV or Excel for reporting or analysis.
 
-* **Interactive Dashboard**
+* **Interactive Dashboard:**<br>
   Provides dynamic filtering and insightful visual summaries:
 
   * **KPI Cards**: Total Employees | Average Actual Salary | Average Predicted Salary | Prediction Accuracy (R²)
@@ -68,12 +68,13 @@
     * **Histogram** – Employee Age Distribution
     * **100% Stacked Bar** – Gender Ratio per Job Title
 
-* **Real‑Time Salary Prediction**
+* **Real‑Time Salary Prediction:**<br>
   Users can obtain salary predictions instantly while entering employee data—before confirming the record.
 
-* **Robust Machine Learning Integration**
+* **Robust Machine Learning Integration:**<br>
   Backed by a trained Gradient Boosting model (0.90+ R² score) with target encoding for accurate and reliable salary forecasts.
 
+---
 
 ## Tech Stack
 
