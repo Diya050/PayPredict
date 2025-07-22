@@ -35,6 +35,7 @@ The application enables **real-time salary predictions** during data entry, stre
 
 ## Salary Insights Dashboard View:
 <img width="1863" height="1011" alt="home_page_1" src="Previews/dashboard_1.png" />
+<img width="1863" height="1011" alt="home_page_1" src="Previews/dashboard_5.png" />
 <img width="1863" height="1011" alt="home_page_1" src="Previews/dashboard_2.png" />
 <img width="1863" height="1011" alt="home_page_1" src="Previews/dashboard_3.png" />
 <img width="1863" height="1011" alt="home_page_1" src="Previews/dashboard_4.png" />
