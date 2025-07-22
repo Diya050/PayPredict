@@ -31,6 +31,10 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev_key')
 
 
 db = SQLAlchemy(app)
+# Temporary: Create tables on startup if they don’t exist
+with app.app_context():
+    db.create_all()
+
 
 # Load ML artifacts
 model   = joblib.load('model/salary_predictor_gb.pkl')
