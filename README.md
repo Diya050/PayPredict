@@ -1,6 +1,9 @@
 # PayPredict: Employee Salary Prediction and Management System
 
-**PayPredict** is a responsive HR analytics web application designed to support HR teams in managing employee records and predicting monthly salaries. It considers essential factors including age, gender, education, job title, and experience.
+**PayPredict** is a modern web app tailored for HR professionals, offering a powerful platform to **manage and analyze employee data** with ease. It seamlessly integrates a predictive engine that estimates monthly salaries based on key demographic and professional attributes—such as age, gender, education level, job title, and years of experience. 
+
+The application enables **real-time salary predictions** during data entry, streamlining decision-making and onboarding processes. Designed with a **user-friendly interface**, PayPredict empowers HR teams to optimize workforce planning, **perform trend analysis**, and ensure compensation alignment with industry standards.
+
 
 ## Home View:
 <img width="1863" height="1011" alt="home_page_1" src="Previews/home_page_1.png" />
