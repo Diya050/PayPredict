@@ -96,19 +96,34 @@ def add_employee():
     flash(f'Added {name} (Actual: ₹{actual:.2f}, Predicted: ₹{predicted:.2f})', 'success')
     return redirect(url_for('index'))
 
-# Edit employee
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit_employee(id):
     emp = Employee.query.get_or_404(id)
+
     if request.method == 'POST':
         form = request.form
+
+        # Store original values for comparison
+        original = {
+            'name': emp.name,
+            'age': emp.age,
+            'gender': emp.gender,
+            'education_level': emp.education_level,
+            'job_title': emp.job_title,
+            'experience': emp.experience,
+            'actual_salary': emp.actual_salary,
+        }
+
+        # Update fields from form
         emp.name            = form['name']
         emp.age             = int(form['age'])
         emp.gender          = form['gender']
         emp.education_level = form['education_level']
         emp.job_title       = form['job_title']
         emp.experience      = float(form['experience'])
-        # re‑predict
+        emp.actual_salary   = float(form['actual_salary'])
+
+        # Predict new salary
         payload = {
             'Age': emp.age,
             'Gender': emp.gender,
@@ -117,13 +132,42 @@ def edit_employee(id):
             'Years of Experience': emp.experience
         }
         emp.predicted_salary = predict_salary(payload)
-        # update actual if provided
-        if 'salary' in form:
-            emp.actual_salary = float(form['salary'])
+
+        # Track changes
+        changed = []
+        for key, old_value in original.items():
+            new_value = getattr(emp, key)
+            if old_value != new_value:
+                changed.append(f"{key.replace('_', ' ').title()}")
+
         db.session.commit()
-        flash(f'Updated {emp.name}', 'success')
-        return redirect(url_for('index'))
+
+        # Flash with detail
+        if changed:
+            fields = ', '.join(changed)
+            flash(f"Updated {emp.name}'s fields: {fields}", 'success')
+        else:
+            flash(f"No changes made to {emp.name}", 'info')
+
+        return redirect(url_for('employees_table'))
+
     return render_template('edit_employee.html', employee=emp)
+
+@app.route('/predict_salary_api', methods=['POST'])
+def predict_salary_api():
+    data = request.get_json()
+
+    payload = {
+        'Age': int(data['age']),
+        'Gender': data['gender'],
+        'Education Level': data['education_level'],
+        'Job Title': data['job_title'],
+        'Years of Experience': float(data['experience']),
+    }
+
+    predicted = predict_salary(payload)
+    return {'predicted_salary': round(predicted, 2)}
+
 
 # Delete employee
 @app.route('/delete/<int:id>')

@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <title>Employee Records</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<style>
     body {
       background-color: #0d1b2a;
       font-family: 'Poppins', sans-serif;
@@ -149,6 +150,27 @@
       background-color: #484c4fff;
       color: #ffffff;
     }
+    .alert {
+    border-radius: 12px;
+    font-size: 1.05rem;
+    font-weight: 500;
+    padding: 1rem 1.25rem;
+    border: none;
+  }
+
+  .alert-success {
+    background-color: #d1e7dd;
+    color: #0f5132;
+  }
+
+  .alert-danger {
+    background-color: #f8d7da;
+    color: #842029;
+  }
+
+  .btn-close {
+    filter: brightness(0) saturate(100%) invert(24%) sepia(56%) saturate(1926%) hue-rotate(87deg) brightness(98%) contrast(86%);
+  }
 
     .btn-success {
       background-color: #0f967bff;
@@ -212,6 +234,19 @@
     </div>
   </nav>
 
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="container mt-3">
+      {% for category, msg in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show custom-flash" role="alert">
+          {{ msg }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
   <div class="container mt-5">
     <div class="text-center mb-4">
       <h2>Employee Records</h2>
@@ -266,16 +301,33 @@
           </select>
         </div>
       </div>
-      <div class="row mt-2">
-        <div class="col-md-6 mb-2">
-          <input type="number" id="actualSalaryMin" class="form-control" placeholder="Min. Actual Salary">
-        </div>
-        <div class="col-md-6 mb-2">
-          <input type="number" id="actualSalaryMax" class="form-control" placeholder="Max. Actual Salary">
-        </div>
-      </div>
-    </div>
+ <!-- Row 1: Experience and Age -->
+<div class="row mt-2">
+  <div class="col-md-3 mb-2">
+    <input type="number" id="experienceMin" class="form-control" placeholder="Min. Experience (Years)">
+  </div>
+  <div class="col-md-3 mb-2">
+    <input type="number" id="experienceMax" class="form-control" placeholder="Max. Experience (Years)">
+  </div>
+  <div class="col-md-3 mb-2">
+    <input type="number" id="ageMin" class="form-control" placeholder="Min. Age">
+  </div>
+  <div class="col-md-3 mb-2">
+    <input type="number" id="ageMax" class="form-control" placeholder="Max. Age">
+  </div>
 
+
+<!-- Row 2: Salary -->
+<div class="row mt-2">
+  <div class="col-md-6 mb-2">
+    <input type="number" id="actualSalaryMin" class="form-control" placeholder="Min. Actual Salary">
+  </div>
+  <div class="col-md-6 mb-2">
+    <input type="number" id="actualSalaryMax" class="form-control" placeholder="Max. Actual Salary">
+  </div>
+</div>
+</div>
+    </div>
     <div class="result-count" id="resultCount">
       Showing {{ employees|length }} of {{ employees|length }} employees
     </div>
@@ -322,6 +374,12 @@
     const educationFilter = document.getElementById("educationFilter");
     const actualSalaryMin = document.getElementById("actualSalaryMin");
     const actualSalaryMax = document.getElementById("actualSalaryMax");
+    const ageMin = document.getElementById("ageMin");
+    const ageMax = document.getElementById("ageMax");
+    const experienceMin = document.getElementById("experienceMin");
+    const experienceMax = document.getElementById("experienceMax");
+
+
     const rows = document.querySelectorAll("table tbody tr");
     const resultCount = document.getElementById("resultCount");
 
@@ -332,6 +390,10 @@
       const educationValue = educationFilter.value.toLowerCase();
       const minSalary = parseFloat(actualSalaryMin.value) || -Infinity;
       const maxSalary = parseFloat(actualSalaryMax.value) || Infinity;
+      const minAge = parseFloat(ageMin.value) || -Infinity;
+      const maxAge = parseFloat(ageMax.value) || Infinity;
+      const minExperience = parseFloat(experienceMin.value) || -Infinity;
+      const maxExperience = parseFloat(experienceMax.value) || Infinity;
 
       let visibleCount = 0;
 
@@ -341,14 +403,18 @@
         const gender = row.cells[2].textContent.toLowerCase();
         const education = row.cells[3].textContent.toLowerCase();
         const actualSalary = parseFloat(row.cells[6].textContent.replace(/[^0-9.-]+/g, "")) || 0;
+        const age = parseFloat(row.cells[1].textContent) || 0;
+        const experience = parseFloat(row.cells[4].textContent) || 0;
 
         const matchesName = name.includes(nameValue);
         const matchesJob = !jobTitleValue || job === jobTitleValue;
         const matchesGender = !genderValue || gender === genderValue;
         const matchesEducation = !educationValue || education === educationValue;
         const matchesSalary = actualSalary >= minSalary && actualSalary <= maxSalary;
+        const matchesAge = age >= minAge && age <= maxAge;
+        const matchesExperience = experience >= minExperience && experience <= maxExperience;
 
-        const isVisible = matchesName && matchesJob && matchesGender && matchesEducation && matchesSalary;
+        const isVisible = matchesName && matchesJob && matchesGender && matchesEducation && matchesSalary && matchesAge && matchesExperience;
         row.style.display = isVisible ? "" : "none";
 
         if (isVisible) visibleCount++;
@@ -364,6 +430,11 @@
       educationFilter.value = "";
       actualSalaryMin.value = "";
       actualSalaryMax.value = "";
+      ageMin.value = "";
+      ageMax.value = "";
+      experienceMin.value = "";
+      experienceMax.value = ""; 
+
       filterTable();
     }
 
@@ -373,6 +444,12 @@
     educationFilter.addEventListener("change", filterTable);
     actualSalaryMin.addEventListener("input", filterTable);
     actualSalaryMax.addEventListener("input", filterTable);
+    ageMin.addEventListener("input", filterTable);
+    ageMax.addEventListener("input", filterTable);
+    experienceMin.addEventListener("input", filterTable);
+    experienceMax.addEventListener("input", filterTable);
+
+
   </script>
 </body>
 </html>

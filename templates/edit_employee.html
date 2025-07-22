@@ -3,11 +3,82 @@
 <head>
   <meta charset="UTF-8">
   <title>Edit Employee</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #0d1b2a;
+      color: #f1f1f1;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    h1 {
+      font-weight: 600;
+      color: #f8f9fa;
+    }
+
+    .container {
+      max-width: 850px;
+      background-color: #1b263b;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      margin-top: 60px;
+    }
+
+    .form-label {
+      color: #ced4da;
+      font-weight: 500;
+    }
+
+    .form-control,
+    .form-select {
+      background-color: #1e2e46;
+      color: #ffffff;
+      border: 1px solid #456799ff;
+      border-radius: 8px;
+    }
+
+    .form-control::placeholder {
+      color: #cbd5e1;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      border-color: #00b894;
+      box-shadow: 0 0 0 0.2rem rgba(0, 184, 148, 0.25);
+    }
+
+    .btn-primary {
+      background-color: #10b981;
+      border: none;
+      font-weight: 600;
+      border-radius: 8px;
+    }
+
+    .btn-primary:hover {
+      background-color: #059669;
+    }
+
+    .btn-secondary {
+      background-color: #5c6165ff;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+    }
+
+    .btn-secondary:hover {
+      background-color: #484c4fff;
+      color: #ffffff;
+    }
+
+    a {
+      text-decoration: none;
+    }
+  </style>
 </head>
 <body>
-  <div class="container mt-5">
+  <div class="container">
     <h1 class="text-center mb-4">Edit Employee</h1>
     <form method="POST">
       <div class="row">
@@ -43,13 +114,83 @@
           <input type="number" step="0.1" name="experience" class="form-control" value="{{ employee.experience }}" required>
         </div>
       </div>
-      <div class="mb-3">
-        <label class="form-label">Job Title</label>
-        <input type="text" name="job_title" class="form-control" value="{{ employee.job_title }}" required>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Job Title</label>
+          <select name="job_title" class="form-select" required>
+            <option value="" {% if employee.job_title == "" %}selected{% endif %}>Select Job Title</option>
+            <option {% if employee.job_title == "Others" %}selected{% endif %}>Others</option>
+            <option {% if employee.job_title == "Software Engineer Manager" %}selected{% endif %}>Software Engineer Manager</option>
+            <option {% if employee.job_title == "Full Stack Engineer" %}selected{% endif %}>Full Stack Engineer</option>
+            <option {% if employee.job_title == "Senior Software Engineer" %}selected{% endif %}>Senior Software Engineer</option>
+            <option {% if employee.job_title == "Senior Project Engineer" %}selected{% endif %}>Senior Project Engineer</option>
+            <option {% if employee.job_title == "Back end Developer" %}selected{% endif %}>Back end Developer</option>
+            <option {% if employee.job_title == "Data Scientist" %}selected{% endif %}>Data Scientist</option>
+            <option {% if employee.job_title == "Software Engineer" %}selected{% endif %}>Software Engineer</option>
+            <option {% if employee.job_title == "Front end Developer" %}selected{% endif %}>Front end Developer</option>
+            <option {% if employee.job_title == "Marketing Manager" %}selected{% endif %}>Marketing Manager</option>
+            <option {% if employee.job_title == "Product Manager" %}selected{% endif %}>Product Manager</option>
+            <option {% if employee.job_title == "Data Analyst" %}selected{% endif %}>Data Analyst</option>
+            <option {% if employee.job_title == "Web Developer" %}selected{% endif %}>Web Developer</option>
+            <option {% if employee.job_title == "Financial Manager" %}selected{% endif %}>Financial Manager</option>
+            <option {% if employee.job_title == "Director of Marketing" %}selected{% endif %}>Director of Marketing</option>
+            <option {% if employee.job_title == "Director of HR" %}selected{% endif %}>Director of HR</option>
+            <option {% if employee.job_title == "Marketing Coordinator" %}selected{% endif %}>Marketing Coordinator</option>
+          </select>
+        </div>
+
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Actual Salary (₹)</label>
+          <input type="number" name="actual_salary" class="form-control" value="{{ employee.actual_salary }}" required>
+        </div>
       </div>
-      <button type="submit" class="btn btn-primary">Update</button>
-      <a href="/" class="btn btn-secondary">Cancel</a>
+      <div class="mb-3">
+  <label class="form-label">Predicted Salary (₹)</label>
+  <input type="text" id="predicted_salary" class="form-control" value="₹{{ employee.predicted_salary | round(2) }}" readonly>
+</div>
+
+
+      <div class="d-flex justify-content-between mt-4">
+        <button type="submit" class="btn btn-primary">Update</button>
+        <a href="/employees_table" class="btn btn-secondary">Cancel</a>
+      </div>
     </form>
   </div>
+
+  <script>
+  function fetchPredictedSalary() {
+    const payload = {
+      age: document.querySelector('input[name="age"]').value,
+      gender: document.querySelector('select[name="gender"]').value,
+      education_level: document.querySelector('select[name="education_level"]').value,
+      job_title: document.querySelector('select[name="job_title"]').value,
+      experience: document.querySelector('input[name="experience"]').value
+    };
+
+    fetch('/predict_salary_api', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('predicted_salary').value = `₹${data.predicted_salary.toLocaleString()}`;
+    });
+  }
+
+  const fields = ['age', 'gender', 'education_level', 'job_title', 'experience'];
+  fields.forEach(field => {
+    const input = document.querySelector(`[name="${field}"]`);
+    if (input) {
+      input.addEventListener('input', fetchPredictedSalary);
+      input.addEventListener('change', fetchPredictedSalary);
+    }
+  });
+</script>
+
 </body>
 </html>

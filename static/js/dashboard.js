@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   Chart.defaults.color = '#f1f5f9'; // Light font color for dark mode
-Chart.defaults.plugins.legend.labels.color = '#f1f5f9'; // Legend color
-Chart.defaults.plugins.title.color = '#f1f5f9'; // Chart title color
+  Chart.defaults.plugins.legend.labels.color = '#f1f5f9'; // Legend color
+  Chart.defaults.plugins.title.color = '#f1f5f9'; // Chart title color
 
   const API_URL = "/api/employees";
   let allData = [];
