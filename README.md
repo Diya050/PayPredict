@@ -85,7 +85,7 @@ The application enables **real-time salary predictions** during data entry, stre
 - **Backend**: Python, Flask, SQLAlchemy  
 - **Model**: scikit‑learn (Gradient Boosting), `category_encoders`  
 - **Frontend**: HTML, Bootstrap 5, Chart.js, JavaScript  
-- **Database**: SQLite  
+- **Database**: PostgreSQL  
 - **Data I/O**: pandas for CSV and Excel handling
 
 ---
